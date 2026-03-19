@@ -22,8 +22,6 @@ function App() {
           element = {<SignUpPage/>}
         />
 
-
-        {/* protectect route */}
         {/* protectect routes */}
           <Route element={<ProtectedRoute />}>
             <Route
