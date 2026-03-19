@@ -18,6 +18,16 @@ const friendSchema = new mongoose.Schema(
   }
 );
 
+friendSchema.pre('save', function () {
+  const a = this.userA.toString();
+  const b = this.userB.toString();
+
+  if (a > b) {
+    this.userA = new mongoose.Types.ObjectId(b);
+    this.userB = new mongoose.Types.ObjectId(a);
+  }
+});
+
 // Đảm bảo không có trường hợp kết bạn trùng lặp giữa 2 user
 friendSchema.index({ userA: 1, userB: 1 }, { unique: true });
 

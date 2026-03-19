@@ -11,33 +11,35 @@ const messageSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Conversation",
       required: true,
+      index: true,
     },
-    type: {
-      type: String,
-      enum: ["text", "image", "file", "system"],
-      default: "text",
-    },
-    replyToId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Message",
-      default: null,
-    },
-    isRevoked: {
-      type: Boolean,
-      default: false,
-    },
+    // type: {
+    //   type: String,
+    //   enum: ["text", "image", "file", "system"],
+    //   default: "text",
+    // },
+    // replyToId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Message",
+    //   default: null,
+    // },
+    // isRevoked: {
+    //   type: Boolean,
+    //   default: false,
+    // },
     content: {
       type: String,
       default: "",
+      trim: true,
     },
     imgUrl: {
       type: String,
       default: "",
     },
-    fileUrl: {
-      type: String,
-      default: "",
-    },
+    // fileUrl: {
+    //   type: String,
+    //   default: "",
+    // },
   },
   {
     timestamps: true,
