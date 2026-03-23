@@ -20,10 +20,15 @@ import CreateNewChat from "../chat/CreateNewChat"
 import NewGroupChatModal from "../chat/NewGroupChatModal"
 import GroupChatList from "../chat/GroupChatList"
 import DirectMessageList from "../chat/DirectMessageList"
+import { useThemeStore } from "@/stores/useThemeStore"
+import { useAuthStore } from "@/stores/useAuthStore"
 
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { isDark, toggleTheme } = useThemeStore();
+  const {user} = useAuthStore();
+  
   return (
     <Sidebar variant="inset" {...props}>
       {/* header */}
@@ -37,8 +42,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <div className="flex item-center gap-2">
                     <Sun className="size-4 text-white/80" />
                     <Switch 
-                    checked={true}
-                    onCheckedChange={() => {}}
+                    checked={isDark}
+                    onCheckedChange={toggleTheme}
                     className="data-[state=checked]:bg-background/80"
                     />
                     <Moon className="size-4 text-white/80" />
@@ -100,7 +105,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       {/* footer */}
       <SidebarFooter>
-        {/* <NavUser user={data.user} /> */}
+        {user && <NavUser user={user} />}
       </SidebarFooter>
     </Sidebar>
   )

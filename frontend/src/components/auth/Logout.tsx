@@ -17,14 +17,14 @@ const Logout = () => {
 
   return (
 
-    <Button onClick={handleLogout}>logout</Button>
-    // <Button 
-    //   // variant="completeGhost"
-    //   onClick={handleLogout}
-    // >
-    //   <LogOut className="text-destructive" />
-    //   Log out
-    // </Button>
+    // <Button onClick={handleLogout}>logout</Button>
+    <Button 
+      variant="completeGhost"
+      onClick={handleLogout}
+    >
+      <LogOut className="text-destructive" />
+      Log out
+    </Button>
   );
 };
 
