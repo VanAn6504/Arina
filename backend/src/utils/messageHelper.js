@@ -24,7 +24,7 @@ export const updateConversationAfterCreateMessage = (
   });
 };
 
-export const emitNewMessage = (io, conversation, message) => {
+export const emitNewMessage = (io, conversation, message) => {//phat sk newmessage vao 1 room co id la id cuoc tro chuyen, moi khi co tn moi thi tat ca client trong room do se nhan duoc sk newmessage
   io.to(conversation._id.toString()).emit("new-message", {
     message,
     conversation: {
