@@ -1,3 +1,4 @@
+import type { Socket } from "node_modules/socket.io-client/build/esm/socket";
 import type { Conversation, Message } from "./chat";
 import type { User } from "./user";
 
@@ -45,4 +46,12 @@ export interface ChatState {
   setActiveConversation: (id: string | null) => void;
   fetchConversations: () => Promise<void>;
   fetchMessages: (conversationId?: string) => Promise<void>;
+  sendDirectMessage: (recipientId: string, content: string, imgUrl?: string) => Promise<void>;
+  sendGroupMessage: (conversationId: string, content: string, imgUrl?: string) => Promise<void>;
+}
+
+export interface SocketState {
+  socket: Socket | null;
+  connectSocket: () => void;
+  disconnectSocket: () => void;
 }
