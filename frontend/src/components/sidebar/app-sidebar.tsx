@@ -61,7 +61,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       {/* content */}
-      <SidebarContent>
+      <SidebarContent className="beautiful-scrollbar">
+
         {/* newchat */}
         <SidebarGroup>
           <SidebarGroupContent>
@@ -79,7 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <NewGroupChatModal />
           </SidebarGroupAction>
 
-          <SidebarContent>
+          <SidebarContent >
             {/* List nhóm chat ở đây */}
             <GroupChatList />
           </SidebarContent> 

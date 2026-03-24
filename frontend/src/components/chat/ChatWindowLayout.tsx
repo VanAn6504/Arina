@@ -6,7 +6,6 @@ import ChatWindowBody from "./ChatWindowBody";
 import MessageInput from "./MessageInput";
 import { useEffect } from "react";
 import ChatWindowSkeleton from "./ChatWindowSkeleton";
-// import ChatWindowSkeleton from "../skeleton/ChatWindowSkeleton";
 
 const ChatWindowLayout = () => {
   const {
@@ -47,8 +46,7 @@ const ChatWindowLayout = () => {
   return (
     <SidebarInset className="flex flex-col h-full flex-1 overflow-hidden rounded-sm shadow-md">
       {/* Header */}
-      {/* <ChatWindowHeader chat={selectedConvo} /> */}
-      <ChatWindowHeader />
+      <ChatWindowHeader chat={selectedConvo} />
 
       {/* Body */}
       <div className="flex-1 overflow-y-auto bg-primary-foreground">
@@ -56,8 +54,7 @@ const ChatWindowLayout = () => {
       </div>
 
       {/* Footer */}
-      {/* <MessageInput selectedConvo={selectedConvo} /> */}
-      <MessageInput />
+      <MessageInput selectedConvo={selectedConvo} />
     </SidebarInset>
   );
 };

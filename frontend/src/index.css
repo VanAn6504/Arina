@@ -290,8 +290,10 @@
 
   /* Scrollbar */
   .beautiful-scrollbar {
-    @apply scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent dark:scrollbar-thumb-slate-600;
+    @apply scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent 
+    dark:scrollbar-thumb-slate-600;
   }
+
 
   /* Animations */
   .transition-bounce {
