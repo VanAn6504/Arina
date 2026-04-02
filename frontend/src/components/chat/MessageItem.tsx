@@ -19,11 +19,8 @@ const MessageItem = ({
   selectedConvo,
   lastMessageStatus,
 }: MessageItemProps) => {
-//   const prev = index + 1 < messages.length ? messages[index + 1] : undefined; // tin nhắn được sắp xếp theo thứ tự mới đến cũ nên index + 1 sẽ là tin nhắn trước đó
-  const prev = messages[index - 1];
-//   const isGroupBreak = index === 0 || message.senderId !== prev?.senderId || // nếu là tin nhắn đầu tiên hoặc người gửi khác với tin nhắn trước đó thì sẽ là group break
-//     new Date(message.createdAt).getTime() - new Date(prev?.createdAt || 0).getTime() > 300000; // hoặc nếu khoảng cách giữa tin nhắn hiện tại và tin nhắn trước đó lớn hơn 5 phút thì cũng sẽ là group break 
-
+  const prev = index + 1 < messages.length ? messages[index + 1] : undefined; // tin nhắn được sắp xếp theo thứ tự mới đến cũ nên index + 1 sẽ là tin nhắn trước đó
+ 
   const isShowTime =
     index === 0 ||
     new Date(message.createdAt).getTime() -

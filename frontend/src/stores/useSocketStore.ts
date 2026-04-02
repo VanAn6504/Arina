@@ -53,29 +53,29 @@ export const useSocketStore = create<SocketState>((set, get) => ({
       };
 
       if (useChatStore.getState().activeConversationId === message.conversationId) {
-        // useChatStore.getState().markAsSeen();
+        useChatStore.getState().markAsSeen();
       }
 
       useChatStore.getState().updateConversation(updatedConversation);
     });
 
-//     // read message
-//     socket.on("read-message", ({ conversation, lastMessage }) => {
-//       const updated = {
-//         _id: conversation._id,
-//         lastMessage,
-//         lastMessageAt: conversation.lastMessageAt,
-//         unreadCounts: conversation.unreadCounts,
-//         seenBy: conversation.seenBy,
-//       };
+   // read message
+ socket.on("read-message", ({ conversation, lastMessage }) => {
+      const updated = {
+        _id: conversation._id,
+        lastMessage,
+        lastMessageAt: conversation.lastMessageAt,
+        unreadCounts: conversation.unreadCounts,
+        seenBy: conversation.seenBy,
+      };
 
-//       useChatStore.getState().updateConversation(updated);
-//     });
+      useChatStore.getState().updateConversation(updated);
+    });
 
-//     // new group chat
-//     socket.on("new-group", (conversation) => {
-//       useChatStore.getState().addConvo(conversation);
-//       socket.emit("join-conversation", conversation._id);
+    // new group chat
+    // socket.on("new-group", (conversation) => {
+    //   useChatStore.getState().addConvo(conversation);
+    //   socket.emit("join-conversation", conversation._id);
     // });
   },
   disconnectSocket: () => {
