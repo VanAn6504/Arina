@@ -162,44 +162,44 @@ export const useChatStore = create<ChatState>()(
                 ),
                 }));
             },
-            // markAsSeen: async () => {
-            //     try {
-            //         const { user } = useAuthStore.getState();
-            //         const { activeConversationId, conversations } = get();
+            markAsSeen: async () => {
+                try {
+                    const { user } = useAuthStore.getState();
+                    const { activeConversationId, conversations } = get();
 
-            //         if (!activeConversationId || !user) {
-            //             return;
-            //         }
+                    if (!activeConversationId || !user) {
+                        return;
+                    }
 
-            //         const convo = conversations.find((c) => c._id === activeConversationId);
+                    const convo = conversations.find((c) => c._id === activeConversationId);
 
-            //         if (!convo) {
-            //             return;
-            //         }
+                    if (!convo) {
+                        return;
+                    }
 
-            //         if ((convo.unreadCounts?.[user._id] ?? 0) === 0) {
-            //             return;
-            //         }
+                    if ((convo.unreadCounts?.[user._id] ?? 0) === 0) {
+                        return;
+                    }
 
-            //         await chatService.markAsSeen(activeConversationId);
+                    await chatService.markAsSeen(activeConversationId);
 
-            //         set((state) => ({
-            //             conversations: state.conversations.map((c) =>
-            //             c._id === activeConversationId && c.lastMessage
-            //                 ? {
-            //                     ...c,
-            //                     unreadCounts: {
-            //                     ...c.unreadCounts,
-            //                     [user._id]: 0,
-            //                     },
-            //                 }
-            //                 : c
-            //             ),
-            //         }));
-            //     } catch (error) {
-            //           console.error("Lỗi xảy ra khi gọi markAsSeen trong store", error);
-            //     }
-            // },
+                    set((state) => ({
+                        conversations: state.conversations.map((c) =>
+                        c._id === activeConversationId && c.lastMessage
+                            ? {
+                                ...c,
+                                unreadCounts: {
+                                ...c.unreadCounts,
+                                [user._id]: 0,
+                                },
+                            }
+                            : c
+                        ),
+                    }));
+                } catch (error) {
+                    console.error("Lỗi xảy ra khi gọi markAsSeen trong store", error);
+                    }
+            },
             // addConvo: (convo) => {
             //     set((state) => {
             //         const exists = state.conversations.some(
