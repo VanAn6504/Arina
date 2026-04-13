@@ -16,8 +16,6 @@ const Logout = () => {
   };
 
   return (
-
-    // <Button onClick={handleLogout}>logout</Button>
     <Button 
       variant="completeGhost"
       onClick={handleLogout}

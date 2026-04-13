@@ -23,15 +23,21 @@ import {
 import type { User } from "@/types/user"
 import { ChevronsUpDownIcon, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon, UserIcon, Bell, LogOut } from "lucide-react"
 import Logout from "../auth/Logout"
+import { useState } from "react"
+import FriendRequestDialog from "../friendRequest/FriendRequestDialog";
 
 export function NavUser({
   user,
 }: {
   user: User
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
+  const [friendRequestOpen, setfriendRequestOpen] = useState(false);
+
+
 
   return (
+    <>
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
@@ -76,7 +82,9 @@ export function NavUser({
                 />
                 Tài khoản
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setfriendRequestOpen(true)}
+              >
                 <Bell className="text-muted-foreground dark:group-focus:!text-accent-foreground"
                 />
                 Thông Báo
@@ -94,5 +102,11 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+
+    <FriendRequestDialog 
+      open={friendRequestOpen}
+      setOpen={setfriendRequestOpen} 
+    />
+    </>
+  );
 }

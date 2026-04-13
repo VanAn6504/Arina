@@ -13,20 +13,11 @@ const messageSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    // type: {
-    //   type: String,
-    //   enum: ["text", "image", "file", "system"],
-    //   default: "text",
-    // },
-    // replyToId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Message",
-    //   default: null,
-    // },
-    // isRevoked: {
-    //   type: Boolean,
-    //   default: false,
-    // },
+    type: {
+      type: String,
+      enum: ["text", "image", "file", "system"],
+      default: "text",
+    },
     content: {
       type: String,
       default: "",
@@ -36,10 +27,10 @@ const messageSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    // fileUrl: {
-    //   type: String,
-    //   default: "",
-    // },
+    fileUrl: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

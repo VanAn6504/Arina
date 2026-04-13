@@ -19,6 +19,7 @@ import { Switch } from "../ui/switch"
 import CreateNewChat from "../chat/CreateNewChat"
 import NewGroupChatModal from "../chat/NewGroupChatModal"
 import GroupChatList from "../chat/GroupChatList"
+import AddFriendModal from "../chat/AddFriendModal"
 import DirectMessageList from "../chat/DirectMessageList"
 import { useThemeStore } from "@/stores/useThemeStore"
 import { useAuthStore } from "@/stores/useAuthStore"
@@ -93,7 +94,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupLabel>
           
           <SidebarGroupAction title="Kết bạn" className="cursor-pointer">
-            <NewGroupChatModal />
+            <AddFriendModal />
           </SidebarGroupAction>
 
           <SidebarContent>

@@ -26,34 +26,19 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
     avatarUrl: {
-      type: String, default: "" // link CDN để hiển thị hình
+      type: String, // link CDN để hiển thị hình
     },
     avatarId: {
-      type: String, default: "" // Cloudinary public_id để xoá hình
+      type: String, // Cloudinary public_id để xoá hình
     },
     bio: {
       type: String,
-      maxlength: 500, default: "" 
+      maxlength: 500, // tuỳ
     },
     phone: {
       type: String,
-      sparse: true, 
-      unique: true, // Thêm unique để sparse phát huy tác dụng
+      sparse: true, // cho phép null, nhưng không được trùng
     },
-    isOnline: { 
-      type: Boolean, 
-      default: false 
-    },
-    lastActiveAt: { 
-      type: Date, 
-      default: Date.now 
-    },
-    fcmTokens: [
-      { type: String } // Lưu token thiết bị để gửi Push Notification
-    ], 
-    blockedUsers: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "User" } // Danh sách user bị chặn
-    ]
   },
   {
     timestamps: true,

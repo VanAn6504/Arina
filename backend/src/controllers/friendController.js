@@ -45,7 +45,7 @@ export const sendFriendRequest = async (req, res) => {
       return res.status(400).json({ message: "Đã có lời mời kết bạn đang chờ" });
     }
 
-    const request = await FriendRequest.create({
+    const request = await FriendRequest.create( {
       from,
       to,
       message,
@@ -62,7 +62,7 @@ export const sendFriendRequest = async (req, res) => {
 
 export const acceptFriendRequest = async (req, res) => {
   try {
-    const { requestId } = req.params;//lay id cua loi moi ket ban tu url params ma client gui len
+    const { requestId } = req.params;
     const userId = req.user._id;
 
     const request = await FriendRequest.findById(requestId);
@@ -124,6 +124,32 @@ export const declineFriendRequest = async (req, res) => {
     return res.sendStatus(204);
   } catch (error) {
     console.error("Lỗi khi từ chối lời mời kết bạn", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+
+export const cancelFriendRequest = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const userId = req.user._id;
+
+    const request = await FriendRequest.findById(requestId);
+
+    if (!request) {
+      return res.status(404).json({ message: "Không tìm thấy lời mời kết bạn" });
+    }
+
+    if (request.from.toString() !== userId.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Bạn không có quyền hủy lời mời này" });
+    }
+
+    await FriendRequest.findByIdAndDelete(requestId);
+
+    return res.sendStatus(204);
+  } catch (error) {
+    console.error("Lỗi khi hủy lời mời kết bạn", error);
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };
