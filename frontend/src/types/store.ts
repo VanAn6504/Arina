@@ -51,16 +51,16 @@ export interface ChatState {
 
   // add message
   addMessage: (message: Message) => Promise<void>;
+
   // update convo
-  // updateConversation: (conversation: any) => void;
   updateConversation: (conversation: unknown) => void;
   markAsSeen: () => Promise<void>;
-  // addConvo: (convo: Conversation) => void;
-  // createConversation: (
-  //   type: "group" | "direct",
-  //   name: string,
-  //   memberIds: string[]
-  // ) => Promise<void>;
+  addConvo: (convo: Conversation) => void;
+  createConversation: (
+    type: "group" | "direct",
+    name: string,
+    memberIds: string[]
+  ) => Promise<void>;
 
 }
 
@@ -72,6 +72,7 @@ export interface SocketState {
 }
 
 export interface FriendState {
+  friends: Friend[];
   loading: boolean;
   receivedList: FriendRequest[];
   sentList: FriendRequest[];
@@ -81,4 +82,6 @@ export interface FriendState {
   acceptRequest: (requestId: string) => Promise<void>;
   declineRequest: (requestId: string) => Promise<void>;
   cancelFriendRequest: (requestId: string) => Promise<void>;
+  getFriends: () => Promise<void>;
+
 }
