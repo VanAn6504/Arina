@@ -200,27 +200,46 @@ export const useChatStore = create<ChatState>()(
                     console.error("Lỗi xảy ra khi gọi markAsSeen trong store", error);
                     }
             },
-            // addConvo: (convo) => {
-            //     set((state) => {
-            //         const exists = state.conversations.some(
-            //             (c) => c._id.toString() === convo._id.toString()
-            //     );
 
-            //         return {
-            //             conversations: exists
-            //             ? state.conversations
-            //             : [convo, ...state.conversations],
-            //             activeConversationId: convo._id,
-            //         };
-            //     });
-            // },
+            addConvo: (convo) => {
+                set((state) => {
+                    const exists = state.conversations.some(
+                        (c) => c._id.toString() === convo._id.toString()
+                );
 
-        }),
+                    return {
+                        conversations: exists
+                        ? state.conversations
+                        : [convo, ...state.conversations],
+                        activeConversationId: convo._id,
+                    };
+                });
+            },
 
-            {
-                name: "chat-storage",
-                partialize: (state) => ({
-                    conversations: state.conversations})
-            }
+            createConversation: async (type, name, memberIds) => {
+                try {
+                    set({ loading: true });
+                    const conversation = await chatService.createConversation(
+                        type,
+                        name,
+                        memberIds
+                    );
+
+                    get().addConvo(conversation);
+
+                    useSocketStore.getState().socket?.emit("join-conversation", conversation._id);
+                } catch (error) {
+                    console.error("Lỗi xảy ra khi gọi createConversation trong store", error);
+                } finally {
+                    set({ loading: false });
+                }
+            },
+    }),
+
+    {
+        name: "chat-storage",
+        partialize: (state) => ({
+            conversations: state.conversations})
+    }
     )
 );
