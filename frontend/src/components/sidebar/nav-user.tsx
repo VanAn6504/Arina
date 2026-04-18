@@ -25,6 +25,7 @@ import { ChevronsUpDownIcon, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellI
 import Logout from "../auth/Logout"
 import { useState } from "react"
 import FriendRequestDialog from "../friendRequest/FriendRequestDialog";
+import ProfileDialog from "../profile/ProfileDialog.tsx";
 
 export function NavUser({
   user,
@@ -33,7 +34,7 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
   const [friendRequestOpen, setfriendRequestOpen] = useState(false);
-
+  const [profileOpen, setProfileOpen] = useState(false);
 
 
   return (
@@ -77,14 +78,13 @@ export function NavUser({
             </DropdownMenuLabel>
            
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setProfileOpen(true)}>
                 <UserIcon className="text-muted-foreground dark:group-focus:!text-accent-foreground"
                 />
                 Tài khoản
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setfriendRequestOpen(true)}
-              >
+                onClick={() => setfriendRequestOpen(true)}>
                 <Bell className="text-muted-foreground dark:group-focus:!text-accent-foreground"
                 />
                 Thông Báo
@@ -107,6 +107,10 @@ export function NavUser({
       open={friendRequestOpen}
       setOpen={setfriendRequestOpen} 
     />
+    <ProfileDialog
+        open={profileOpen}
+        setOpen={setProfileOpen}
+      />
     </>
   );
 }

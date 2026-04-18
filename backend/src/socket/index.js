@@ -19,7 +19,7 @@ io.use(socketAuthMiddleware);
 
 const onlineUsers = new Map(); // map nay luu theo cap(key, value) {userId: socketId} dung cho app nho va vua, dung redit cho app lon
 
-io.on("connection", async (socket) => {//on n ghe sk
+io.on("connection", async (socket) => {
   const user = socket.user;
 
   console.log(`${user.displayName} online với socket ${socket.id}`);

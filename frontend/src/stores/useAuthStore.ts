@@ -16,6 +16,10 @@ export const useAuthStore = create<AuthState>()(
   set({ accessToken });
   },
 
+  setUser: (user) => {
+    set({ user });
+  },
+
   clearState: () => { //chi can goi la toan bo thong tin token va user se bi xoa
       set({ accessToken: null, user: null, loading: false });
       useChatStore.getState().reset();
