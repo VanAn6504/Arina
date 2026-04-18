@@ -185,7 +185,6 @@ export const getUserConversationsForSocketIO = async (userId) => {
   }
 };
 
-
 export const markAsSeen = async (req, res) => { 
   try {
     const { conversationId } = req.params;

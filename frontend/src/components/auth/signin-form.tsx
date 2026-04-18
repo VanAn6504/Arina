@@ -126,9 +126,9 @@ export function SigninForm({ className, ...props }: React.ComponentProps<"div">)
           </form>
           <div className="bg-muted relative hidden md:block">
             <img
-              src="/placeholder.png"
+              src="/login.png"
               alt="Image"
-              className="absolute top-1/2 -translate-y-1/2 object-cover"
+              className="w-full h-full absolute top-1/2 -translate-y-1/2 object-cover"
             />
           </div>
         </CardContent>

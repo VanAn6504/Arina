@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       maxlength: 500, // tuỳ
     },
-    phone: {
+    phoneNumber: {
       type: String,
       sparse: true, // cho phép null, nhưng không được trùng
     },
