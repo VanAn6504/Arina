@@ -20,7 +20,7 @@ export const updateConversationAfterCreateMessage = (
 
     const isSender = memberId === senderId.toString();
     const prevCount = conversation.unreadCounts.get(memberId) || 0;
-    conversation.unreadCounts.set(memberId, isSender ? 0 : prevCount + 1); // ai la ng gui thi issender =0 va prevcout +1
+    conversation.unreadCounts.set(memberId, isSender ? 0 : prevCount + 1); // neu la ng gui thi issender =0 va nguoc lai prevcout +1
   });
 };
 
