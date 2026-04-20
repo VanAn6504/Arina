@@ -41,16 +41,28 @@ export interface ChatState {
   convoLoading: boolean;
   messageLoading: boolean;
   loading: boolean;
+  replyingTo: Message | null;
+  typingUsers: Record<string, string[]>; // { conversationId: [displayNames] }
+  
+  setReplyingTo: (message: Message | null) => void;
+  setTyping: (conversationId: string, displayName: string) => void;
+  removeTyping: (conversationId: string, displayName: string) => void;
   reset: () => void;
   
   setActiveConversation: (id: string | null) => void;
   fetchConversations: () => Promise<void>;
   fetchMessages: (conversationId?: string) => Promise<void>;
-  sendDirectMessage: (recipientId: string, content: string, imgUrl?: string) => Promise<void>;
-  sendGroupMessage: (conversationId: string, content: string, imgUrl?: string) => Promise<void>;
+  sendDirectMessage: (recipientId: string, content: string, imgUrl?: string, replyTo?: string) => Promise<void>;
+  sendGroupMessage: (conversationId: string, content: string, imgUrl?: string, replyTo?: string) => Promise<void>;
 
   // add message
   addMessage: (message: Message) => Promise<void>;
+
+  // message actions
+  deleteMessage: (messageId: string) => Promise<void>;
+  editMessage: (messageId: string, content: string) => Promise<void>;
+  reactMessage: (messageId: string, emoji: string) => Promise<void>;
+  updateMessageInStore: (conversationId: string, messageId: string, updates: Partial<Message>) => void;
 
   // update convo
   updateConversation: (conversation: unknown) => void;

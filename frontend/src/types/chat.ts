@@ -44,6 +44,11 @@ export interface ConversationResponse {
   conversations: Conversation[];
 }
 
+export interface MessageReaction {
+  userId: string;
+  emoji: string;
+}
+
 export interface Message {
   _id: string;
   conversationId: string;
@@ -53,4 +58,8 @@ export interface Message {
   updatedAt?: string | null;
   createdAt: string;
   isOwn?: boolean;
+  replyTo?: string | Message | null;
+  isDeleted?: boolean;
+  isEdited?: boolean;
+  reactions?: MessageReaction[];
 }

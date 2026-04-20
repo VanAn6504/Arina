@@ -149,7 +149,8 @@ export const getMessages = async (req, res) => {
 
     let messages = await Message.find(query)
       .sort({ createdAt: -1 })
-      .limit(Number(limit) + 1);//lay them 1 tn de biet co tn tiep theo hay khong
+      .limit(Number(limit) + 1) //lay them 1 tn de biet co tn tiep theo hay khong
+      .populate("replyTo", "content senderId");
 
     let nextCursor = null;
 

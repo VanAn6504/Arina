@@ -37,6 +37,22 @@ io.on("connection", async (socket) => {
     socket.join(conversationId);
   });
 
+  socket.on("typing", (conversationId) => {
+    socket.to(conversationId).emit("user-typing", {
+      conversationId,
+      userId: user._id,
+      displayName: user.displayName,
+    });
+  });
+
+  socket.on("stop-typing", (conversationId) => {
+    socket.to(conversationId).emit("user-stop-typing", {
+      conversationId,
+      userId: user._id,
+      displayName: user.displayName,
+    });
+  });
+
   socket.join(user._id.toString());
 
   socket.on("disconnect", () => {
