@@ -158,7 +158,7 @@ export const useChatStore = create<ChatState>()(
             updateConversation: (conversation) => {
                 set((state) => ({
                 conversations: state.conversations.map((c) =>
-                    c._id === conversation._id ? { ...c, ...conversation } : c //ghi de conversation moi vao cu, neu khong thi giu nguyen
+                    c._id === conversation._id ? { ...c, ...conversation } : c //ghi de conversation moi vao , neu khong thi giu nguyen
                 ),
                 }));
             },

@@ -5,7 +5,7 @@ import crypto from "crypto";
 import Session from "../models/Session.js";
 
 const ACCESS_TOKEN_TTL = "30m"; // ma truy cap thuờng là dưới 15m
-const REFRESH_TOKEN_TTL = 14 * 24 * 60 * 60 * 1000; // ma lam moi la 14 ngày
+const REFRESH_TOKEN_TTL = 14 * 24 * 60 * 60 * 1000; 
 
 export const signUp = async (req, res) =>{
     try {
@@ -17,17 +17,14 @@ export const signUp = async (req, res) =>{
       });
     }
 
-    // kiểm tra username tồn tại chưa
     const duplicate = await User.findOne({ username });
 
     if (duplicate) {
       return res.status(409).json({ message: "username đã tồn tại" });
     }
 
-    // mã hoá password
     const hashedPassword = await bcrypt.hash(password, 10); // salt = 10
 
-    // tạo user mới
     await User.create({
       username,
       hashedPassword,
@@ -35,7 +32,6 @@ export const signUp = async (req, res) =>{
       displayName: `${lastName} ${firstName}`,
     });
 
-    // return
     return res.sendStatus(204);
   } catch (error) {
     console.error("Lỗi khi gọi signUp", error);
@@ -46,7 +42,6 @@ export const signUp = async (req, res) =>{
 export const signIn = async(req, res) =>{
   
   try {
-    //lay input
     const {username, password} = req.body;
 
     if(!username || !password){
@@ -54,7 +49,7 @@ export const signIn = async(req, res) =>{
     }
     //lay hashpassword trong db de so vs password ng dung nhap vao
     const user = await User.findOne({username});
-    //kiem tra password
+
     if(!user){
       return res.status(400).json({ message: "Thiếu username hoặc password." });
     }
@@ -71,10 +66,8 @@ export const signIn = async(req, res) =>{
       process.env.ACCESS_TOKEN_SECRET, 
       {expiresIn: REFRESH_TOKEN_TTL}   
     )
-    //tao request token
       const refreshToken = crypto.randomBytes(64).toString("hex");
 
-    //tao session moi de luu request token
     await Session.create({
       userId: user._id,
       refreshToken,
@@ -85,10 +78,9 @@ export const signIn = async(req, res) =>{
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "none",  //backend, frontend deploy rieng
+      sameSite: "none",  
       maxAge: REFRESH_TOKEN_TTL,
     });
-    //tra access token ve trong res
     return res.status(200).json({message: `User ${user.displayName} da logged in!`, accessToken})
 
   } catch (error) {
@@ -103,9 +95,7 @@ export const signOut = async(req, res) =>{
     const token = req.cookies?.refreshToken;
 
     if(token){
-      //xoa refreshtoken trong session
       await Session.deleteOne({refreshToken: token});
-      //xoa cookie
       res.clearCookie("refreshToken");
     }
     return res.sendStatus(204);
@@ -118,25 +108,21 @@ export const signOut = async(req, res) =>{
 // tạo access token mới từ refresh token
 export const refreshToken = async (req, res) => {
   try {
-    // lấy refresh token từ cookie
     const token = req.cookies?.refreshToken;
     if (!token) {
       return res.status(401).json({ message: "Token không tồn tại." });
     }
 
-    // so với refresh token trong db
     const session = await Session.findOne({ refreshToken: token });
 
     if (!session) {
       return res.status(403).json({ message: "Token không hợp lệ hoặc đã hết hạn" });
     }
 
-    // kiểm tra hết hạn chưa
     if (session.expiresAt < new Date()) {
       return res.status(403).json({ message: "Token đã hết hạn." });
     }
 
-    // tạo access token mới
     const accessToken = jwt.sign(
       {
         userId: session.userId,
@@ -145,7 +131,6 @@ export const refreshToken = async (req, res) => {
       { expiresIn: ACCESS_TOKEN_TTL }
     );
 
-    // return
     return res.status(200).json({ accessToken });
   } catch (error) {
     console.error("Lỗi khi gọi refreshToken", error);

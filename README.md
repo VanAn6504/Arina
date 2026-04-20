@@ -1,127 +1,102 @@
+# 💬 Arina - Real-time Chat Application
 
+Arina là một ứng dụng nhắn tin thời gian thực hoàn chỉnh (Full-stack) được thiết kế với giao diện hiện đại và trải nghiệm người dùng mượt mà. Dự án tập trung vào việc xử lý các luồng dữ liệu phức tạp từ hệ thống xác thực bảo mật đến giao tiếp tức thời thông qua WebSocket.
 
-&#x20;Arina - Real-time Chat Application
+---
 
+## 📸 Screenshots
 
+   Trang Đăng Nhập   
+![Trang Đăng Nhập](./screenshots/signin.png)
 
-Arina là một ứng dụng nhắn tin thời gian thực (Full-stack) hiện đại, được xây dựng với mục tiêu cung cấp trải nghiệm giao tiếp tức thì, bảo mật và mượt mà. Dự án kết hợp sức mạnh của hệ sinh thái JavaScript/TypeScript để tạo ra một nền tảng chat hoàn chỉnh từ hệ thống xác thực đến các tính năng tương tác thời gian thực.
+   Trang Đăng Kí
+![Trang Đăng Kí](./screenshots/signup.png)
 
+    Giao Diện Nhắn Tin   
+![Giao Diện Nhắn Tin](./screenshots/windown_layout.png)
 
+    Giao Diện Cuộc Trò Chuyện   
+![Giao Diện Cuộc Trò Chuyện ](./screenshots/group_conversation.png.png)
 
-Frontend
+    Tạo nhóm 
+![Tạo nhóm](./screenshots/new_group.png)   
 
-* React (Vite) \& TypeScript: Đảm bảo hiệu suất và kiểm soát kiểu dữ liệu chặt chẽ
+    Bạn Bè   
+![Bạn Bè](./screenshots/new_conversation.png)
 
+    Hồ Sơ Cá Nhân
+![Hồ Sơ Cá Nhân](./screenshots/profile_&_setting.png)
 
 
-* Zustand: Quản lý trạng thái ứng dụng tập trung (State Management), thay thế cho Prop Drilling
+---
 
+## 🚀 Công Nghệ Sử Dụng (Tech Stack)
 
+###  Frontend 
+*    Framework:  React (Vite) & TypeScript.
+*    Quản lý State:  Zustand (Quản lý trạng thái tập trung, tránh Prop Drilling).
+*    Giao diện:  Tailwind CSS & Shadcn UI (Hỗ trợ Responsive và Dark Mode).
+*    Real-time:  Socket.IO Client.
 
-* Tailwind CSS \& Shadcn UI: Xây dựng giao diện Responsive, hỗ trợ Dark Mode và các component hiện đại
+###  Backend 
+*    Runtime & Framework:  Node.js & Express.js.
+*    Cơ sở dữ liệu:  MongoDB & Mongoose (NoSQL).
+*    Tài liệu API:  Swagger (OpenAPI) giúp kiểm thử API trực tiếp trên trình duyệt.
 
+###  Bảo mật & Dịch vụ 
+*    Authentication:  JWT (Access Token & Refresh Token) lưu trữ qua HTTP-only Cookies.
+*    Mã hóa:  Bcrypt băm mật khẩu với cơ chế Salt (muối).
+*    Lưu trữ:  Cloudinary (Quản lý hình ảnh và avatar người dùng trên đám mây).
 
+---
 
-* Socket.IO Client: Kết nối thời gian thực với server
+## ✨ Tính Năng Cốt Lõi
 
+###  1. Hệ Thống Xác Thực & Bảo Mật Nâng Cao 
+*   Quy trình đăng ký, đăng nhập và đăng xuất hoàn chỉnh.
+*   Cơ chế  tự động làm mới Access Token  thông qua Axios Interceptor khi phiên làm việc hết hạn.
+*   Bảo vệ các tuyến đường (Protected Routes) cả ở phía Client và Server.
 
+###  2. Giao Tiếp Thời Gian Thực (Socket.IO) 
+*   Gửi và nhận tin nhắn tức thì trong hội thoại cá nhân và nhóm.
+*   Theo dõi trạng thái  Online/Offline  của bạn bè.
+*   Thông báo trạng thái  "Đã xem" (Seen)  và cập nhật tin nhắn cuối cùng theo thời gian thực.
 
-Backend
+###  3. Quản Lý Hội Thoại & Bạn Bè 
+*   Tìm kiếm người dùng theo username và gửi lời mời kết bạn.
+*   Xử lý chấp nhận/từ chối lời mời kết bạn real-time.
+*   Tính năng  Infinite Scroll (Cuộn vô hạn) : Tự động tải thêm lịch sử tin nhắn khi người dùng cuộn lên trên bằng kỹ thuật đảo ngược layout 180 độ.
 
-* Node.js \& Express.js: Nền tảng server-side mạnh mẽ và linh hoạt
+###  4. Trải Nghiệm Người Dùng (UX/UI) 
+*   Hỗ trợ đầy đủ  Dark Mode  và hiệu ứng giao diện mượt mà.
+*    Skeleton Loading : Hiển thị khung giả trong quá trình tải dữ liệu giúp ứng dụng chuyên nghiệp hơn.
+*   Tích hợp bộ chọn Emoji từ thư viện Emoji Mart.
 
+---
 
+## 📂 Cấu Trúc Dự Án
 
-* MongoDB \& Mongoose: Cơ sở dữ liệu NoSQL với Schema chặt chẽ
+```text
+Arina/
+├── backend/
+│   ├── source/
+│   │   ├── controllers/    # Logic xử lý nghiệp vụ (Auth, Message, User...)
+│   │   ├── models/         # Schema MongoDB (User, Conversation, Message...)
+│   │   ├── routes/         # Định nghĩa các API endpoints
+│   │   ├── middlewares/    # Middleware xác thực và upload file
+│   │   ├── socket/         # Cấu hình Socket.IO và quản lý Room
+│   │   └── utils/          # Hàm hỗ trợ (Helper functions)
+│   └── swagger.json        # Tài liệu đặc tả API
+├── frontend/
+│   ├── src/
+│   │   ├── components/     # UI Components (Sidebar, Chat, Skeleton...)
+│   │   ├── pages/          # Các trang chính (Login, Register, ChatApp)
+│   │   ├── services/       # Lớp gọi API (Axios instance)
+│   │   ├── store/          # Quản lý trạng thái với Zustand
+│   │   └── types/          # Định nghĩa kiểu dữ liệu TypeScript
+└── .gitignore              # Quản lý các tệp không đẩy lên Git
+```
 
-
-
-* Socket.IO Server: Xử lý truyền tin và quản lý trạng thái người dùng (Online/Offline)
-
-
-
-Bảo mật \& Công cụ
-
-* JWT (JSON Web Token): Cơ chế Access \& Refresh Token giúp bảo mật phiên đăng nhập và tự động làm mới
-
-
-
-* bcrypt: Mã hóa mật khẩu người dùng trước khi lưu vào database
-
-
-
-* Cloudinary: Lưu trữ và quản lý hình ảnh/avatar người dùng trên đám mây
-
-
-
-* Swagger: Tự động tạo tài liệu API chuyên nghiệp và trực quan
-
-
-
-Tính năng chính
-
-
-
-1. Hệ thống xác thực hiện đại
-    * Đăng ký, đăng nhập và đăng xuất an toàn
-
-
-
-    * Sử dụng Refresh Token lưu trong HTTP-only Cookie để duy trì trạng thái đăng nhập mà không cần login lại nhiều lần
-
-
-
-    * Phân quyền người dùng (Authorization) cho các yêu cầu bảo mật thông qua Middleware
-
-
-
-2\. Kết bạn và Quản lý người dùng
-
-    * Tìm kiếm người dùng theo username và gửi lời mời kết bạn
-
-
-
-    * Quản lý danh sách lời mời (Chấp nhận/Từ chối) và danh sách bạn bè
-
-
-
-    * Cập nhật hồ sơ cá nhân và tải lên ảnh đại diện trực tiếp
-
-
-
-3\. Chat Real-time (Thời gian thực)
-
-    * Chat đơn (1-1) và Chat nhóm: Tạo hội thoại linh hoạt với bạn bè
-
-
-
-    * Thông báo tức thì: Nhận tin nhắn, trạng thái "Đã xem" (Seen) và trạng thái Online/Offline ngay lập tức
-
-
-
-    * Infinite Scroll: Tự động tải thêm lịch sử tin nhắn khi cuộn lên mà không cần load lại trang
-
-
-
-4\. Trải nghiệm người dùng (UX)
-
-    * Giao diện Responsive: Hiển thị hoàn hảo trên cả máy tính và thiết bị di động
-
-
-
-    * Dark/Light Mode: Thay đổi giao diện theo sở thích người dùng
-
-
-
-    * Skeleton Loading: Hiển thị khung giả trong lúc chờ tải dữ liệu giúp ứng dụng mượt mà hơn
-
-
-
-5\. Giao diện người dùng
-
-
-
-
-
-\*Dự án được thực hiện nhằm học hỏi và áp dụng các kỹ thuật xây dựng ứng dụng Full-stack hiện đại.\*
+---
+*Dự án được thực hiện nhằm nghiên cứu và áp dụng các công nghệ Web Full-stack hiện đại.*
 

@@ -3,7 +3,7 @@ import { uploadImageFromBuffer } from "../middlewares/uploadMiddleware.js";
 
 export const authMe = async (req, res) => {
   try {
-    const user = req.user; // lấy từ authMiddleware
+    const user = req.user; 
 
     return res.status(200).json({
       user,
