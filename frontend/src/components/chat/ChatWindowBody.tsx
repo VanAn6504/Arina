@@ -10,8 +10,9 @@ const ChatWindowBody = () => {
     conversations,
     messages: allMessages,
     fetchMessages,
+    typingUsers,
   } = useChatStore();
-  
+
   const [lastMessageStatus, setLastMessageStatus] = useState<"delivered" | "seen">(
     "delivered"
   );//kt trạng thái đã xem hay chưa
@@ -20,6 +21,7 @@ const ChatWindowBody = () => {
   const reversedMessages = [...messages].reverse();// đảo ngược thứ tự tin nhắn để hiển thị từ mới nhất đến cũ nhất
   const hasMore = allMessages[activeConversationId!]?.hasMore ?? false;
   const selectedConvo = conversations.find((c) => c._id === activeConversationId);
+  const currentTypingUsers = typingUsers[activeConversationId!] || [];
   const key = `chat-scroll-${activeConversationId}`;
 
   // ref
@@ -38,11 +40,11 @@ const ChatWindowBody = () => {
     setLastMessageStatus(seenBy.length > 0 ? "seen" : "delivered");
   }, [selectedConvo]);
 
-   // kéo xuống dưới khi load convo
+  // kéo xuống dưới khi load convo
   useLayoutEffect(() => { // scroll đến tin nhắn mới nhất khi chuyển cuộc trò chuyện
     if (!messagesEndRef.current) return;
 
-    messagesEndRef.current?.scrollIntoView({  block: "end" });
+    messagesEndRef.current?.scrollIntoView({ block: "end" });
   }, [activeConversationId]);//chay khi chuyển cuộc trò chuyện
 
   const fetchMoreMessages = async () => {
@@ -106,7 +108,23 @@ const ChatWindowBody = () => {
         onScroll={handleScrollSave}
         className="flex flex-col-reverse overflow-y-auto overflow-x-hidden beautiful-scrollbar"
       >
-        <div ref={messagesEndRef}></div>   
+        <div ref={messagesEndRef}></div>
+
+        {/* Typing Indicator */}
+        {currentTypingUsers.length > 0 && (
+          <div className="flex items-center gap-2 mt-2 mb-1 pl-2 opacity-70 w-full justify-start">
+            <span className="text-xs text-muted-foreground animate-pulse">
+              {currentTypingUsers.length === 1
+                ? `${currentTypingUsers[0]} đang gõ...`
+                : `${currentTypingUsers.join(", ")} đang gõ...`}
+            </span>
+            <div className="flex gap-1 items-center bg-muted/50 py-1.5 px-3 rounded-full">
+              <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+              <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+              <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
+            </div>
+          </div>
+        )}
 
         <InfiniteScroll
           dataLength={messages.length}
@@ -120,7 +138,7 @@ const ChatWindowBody = () => {
             flexDirection: "column-reverse",
             overflow: "visible",
           }}
-        >  
+        >
           {reversedMessages.map((message, index) => (
             <MessageItem
               key={message._id ?? index}
@@ -132,7 +150,6 @@ const ChatWindowBody = () => {
             />
           ))}
         </InfiniteScroll>
-
       </div>
     </div>
   );

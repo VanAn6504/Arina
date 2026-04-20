@@ -22,21 +22,23 @@ export const chatService = {
     return { messages: res.data.messages, cursor: res.data.nextCursor };
   },
 
-  async sendDirectMessage(recipientId: string, content: string="", imgUrl?: string, conversationId?: string){
+  async sendDirectMessage(recipientId: string, content: string="", imgUrl?: string, conversationId?: string, replyTo?: string){
     const res = await api.post("/messages/direct", {
       recipientId,
       content,
       imgUrl,
-      conversationId
+      conversationId,
+      replyTo
     });
     return res.data.message;
   },
 
-  async sendGroupMessage(conversationId: string, content: string="", imgUrl?: string){
+  async sendGroupMessage(conversationId: string, content: string="", imgUrl?: string, replyTo?: string){
     const res = await api.post("/messages/group", {
       conversationId,
       content,
-      imgUrl
+      imgUrl,
+      replyTo
     });
     return res.data.message;
   },
@@ -54,5 +56,20 @@ export const chatService = {
     const res = await api.post("/conversations", { type, name, memberIds });
     return res.data.conversation;
   },
+
+  async deleteMessage(messageId: string) {
+    const res = await api.delete(`/messages/${messageId}/delete`);
+    return res.data;
+  },
+
+  async editMessage(messageId: string, content: string) {
+    const res = await api.put(`/messages/${messageId}/edit`, { content });
+    return res.data;
+  },
+
+  async reactMessage(messageId: string, emoji: string) {
+    const res = await api.post(`/messages/${messageId}/react`, { emoji });
+    return res.data;
+  }
 }
 

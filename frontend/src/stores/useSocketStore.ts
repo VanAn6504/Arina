@@ -72,6 +72,35 @@ export const useSocketStore = create<SocketState>((set, get) => ({
       useChatStore.getState().updateConversation(updated);
     });
 
+    // message events
+    socket.on("message-deleted", ({ conversationId, messageId }) => {
+      useChatStore.getState().updateMessageInStore(conversationId, messageId, {
+        isDeleted: true,
+        content: "Tin nhắn đã bị thu hồi",
+      });
+    });
+
+    socket.on("message-edited", ({ conversationId, message }) => {
+      useChatStore.getState().updateMessageInStore(conversationId, message._id, {
+        isEdited: true,
+        content: message.content,
+      });
+    });
+
+    socket.on("message-reacted", ({ conversationId, messageId, reactions }) => {
+      useChatStore.getState().updateMessageInStore(conversationId, messageId, {
+        reactions,
+      });
+    });
+
+    socket.on("user-typing", ({ conversationId, displayName }) => {
+      useChatStore.getState().setTyping(conversationId, displayName);
+    });
+
+    socket.on("user-stop-typing", ({ conversationId, displayName }) => {
+      useChatStore.getState().removeTyping(conversationId, displayName);
+    });
+
     // new group chat
     socket.on("new-group", (conversation) => {
       useChatStore.getState().addConvo(conversation);

@@ -35,3 +35,15 @@ export const emitNewMessage = (io, conversation, message) => {//phat sk newmessa
     unreadCounts: conversation.unreadCounts,
   });
 };
+
+export const emitMessageDeleted = (io, conversationId, messageId) => {
+  io.to(conversationId.toString()).emit("message-deleted", { conversationId, messageId });
+};
+
+export const emitMessageEdited = (io, conversationId, message) => {
+  io.to(conversationId.toString()).emit("message-edited", { conversationId, message });
+};
+
+export const emitMessageReacted = (io, conversationId, messageId, reactions) => {
+  io.to(conversationId.toString()).emit("message-reacted", { conversationId, messageId, reactions });
+};
