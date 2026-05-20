@@ -101,30 +101,14 @@ const ChatWindowBody = () => {
   }
 
   return (
-    <div className="p-4 bg-primary-foreground h-full flex flex-col overflow-hidden">
+    <div className="p-4 bg-primary-foreground h-full flex flex-col overflow-hidden relative">
       <div
         id="scrollableDiv"
         ref={containerRef}
         onScroll={handleScrollSave}
-        className="flex flex-col-reverse overflow-y-auto overflow-x-hidden beautiful-scrollbar"
+        className="flex-1 flex flex-col-reverse overflow-y-auto overflow-x-hidden beautiful-scrollbar"
       >
         <div ref={messagesEndRef}></div>
-
-        {/* Typing Indicator */}
-        {currentTypingUsers.length > 0 && (
-          <div className="flex items-center gap-2 mt-2 mb-1 pl-2 opacity-70 w-full justify-start">
-            <span className="text-xs text-muted-foreground animate-pulse">
-              {currentTypingUsers.length === 1
-                ? `${currentTypingUsers[0]} đang gõ...`
-                : `${currentTypingUsers.join(", ")} đang gõ...`}
-            </span>
-            <div className="flex gap-1 items-center bg-muted/50 py-1.5 px-3 rounded-full">
-              <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-              <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-              <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
-            </div>
-          </div>
-        )}
 
         <InfiniteScroll
           dataLength={messages.length}
@@ -151,6 +135,22 @@ const ChatWindowBody = () => {
           ))}
         </InfiniteScroll>
       </div>
+
+      {/* Typing Indicator - Cố định ở đáy, ngay trên MessageInput */}
+      {currentTypingUsers.length > 0 && (
+        <div className="flex items-center gap-2 pt-2 pb-1 pl-2 opacity-90 w-full justify-start bg-background/80 backdrop-blur-sm border-t border-border/20 z-10 animate-in slide-in-from-bottom-2 duration-200">
+          <span className="text-xs text-muted-foreground animate-pulse">
+            {currentTypingUsers.length === 1
+              ? `${currentTypingUsers[0]} đang gõ...`
+              : `${currentTypingUsers.join(", ")} đang gõ...`}
+          </span>
+          <div className="flex gap-1 items-center bg-muted/50 py-1.5 px-3 rounded-full">
+            <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+            <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+            <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

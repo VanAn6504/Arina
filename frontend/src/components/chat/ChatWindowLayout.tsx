@@ -6,6 +6,7 @@ import ChatWindowBody from "./ChatWindowBody";
 import MessageInput from "./MessageInput";
 import { useEffect } from "react";
 import ChatWindowSkeleton from "./ChatWindowSkeleton";
+import SearchPanel from "./SearchPanel";
 
 const ChatWindowLayout = () => {
   const {
@@ -14,6 +15,7 @@ const ChatWindowLayout = () => {
     messageLoading: loading,
     messages,
     markAsSeen,
+    showSearchPanel,
   } = useChatStore();
 
   const selectedConvo =
@@ -44,18 +46,23 @@ const ChatWindowLayout = () => {
   }
 
   return (
-    <SidebarInset className="flex flex-col h-full flex-1 overflow-hidden rounded-sm shadow-md">
-      {/* Header */}
-      <ChatWindowHeader chat={selectedConvo} />
+    <div className="flex h-full w-full overflow-hidden flex-1">
+      <SidebarInset className="flex flex-col h-full flex-1 overflow-hidden rounded-sm shadow-md bg-background">
+        {/* Header */}
+        <ChatWindowHeader chat={selectedConvo} />
 
-      {/* Body */}
-      <div className="flex-1 overflow-y-auto bg-primary-foreground">
-        <ChatWindowBody />
-      </div>
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto bg-primary-foreground">
+          <ChatWindowBody />
+        </div>
 
-      {/* Footer */}
-      <MessageInput selectedConvo={selectedConvo} />
-    </SidebarInset>
+        {/* Footer */}
+        <MessageInput selectedConvo={selectedConvo} />
+      </SidebarInset>
+
+      {/* Right Search Panel */}
+      {showSearchPanel && <SearchPanel />}
+    </div>
   );
 };
 

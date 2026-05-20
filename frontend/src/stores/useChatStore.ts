@@ -16,6 +16,13 @@ export const useChatStore = create<ChatState>()(
             loading: false,
             replyingTo: null,
             typingUsers: {},
+            showSearchPanel: false,
+            highlightedMessageId: null,
+            searchKeyword: "",
+            searchResults: [],
+            sidebarSearchQuery: "",
+            sidebarSearchResults: [],
+            sidebarSearchLoading: false,
 
             setReplyingTo: (message) => set({ replyingTo: message }),
 
@@ -47,6 +54,70 @@ export const useChatStore = create<ChatState>()(
             },
 
             setActiveConversation: (id) => set({ activeConversationId: id }),
+            setShowSearchPanel: (show) => set({ showSearchPanel: show }),
+            setHighlightedMessageId: (id) => set({ highlightedMessageId: id }),
+            searchMessages: async (keyword, conversationId) => {
+                set({ searchKeyword: keyword });
+                if (!keyword.trim()) {
+                    set({ searchResults: [] });
+                    return;
+                }
+                try {
+                    const data = await chatService.searchMessages(keyword, conversationId);
+                    set({ searchResults: data.messages || [] });
+                } catch (error) {
+                    console.error("Lỗi xảy ra khi tìm kiếm tin nhắn:", error);
+                    set({ searchResults: [] });
+                }
+            },
+            setSidebarSearchQuery: (query) => set({ sidebarSearchQuery: query }),
+            searchSidebarMessages: async (keyword) => {
+                if (!keyword.trim()) {
+                    set({ sidebarSearchResults: [] });
+                    return;
+                }
+                try {
+                    set({ sidebarSearchLoading: true });
+                    const data = await chatService.searchMessages(keyword); // Tìm kiếm toàn cục
+                    set({ sidebarSearchResults: data.messages || [] });
+                } catch (error) {
+                    console.error("Lỗi xảy ra khi tìm kiếm tin nhắn sidebar:", error);
+                    set({ sidebarSearchResults: [] });
+                } finally {
+                    set({ sidebarSearchLoading: false });
+                }
+            },
+            fetchMessagesAround: async (conversationId, messageId) => {
+                const { user } = useAuthStore.getState();
+                set({ messageLoading: true });
+                try {
+                    const { messages: fetched, cursor } = await chatService.fetchMessages(
+                        conversationId,
+                        undefined,
+                        messageId
+                    );
+
+                    const processed = fetched.map((m: any) => ({
+                        ...m,
+                        isOwn: m.senderId === user?._id,
+                    }));
+
+                    set((state) => ({
+                        messages: {
+                            ...state.messages,
+                            [conversationId]: {
+                                items: processed,
+                                hasMore: !!cursor,
+                                nextCursor: cursor ?? null,
+                            },
+                        },
+                    }));
+                } catch (error) {
+                    console.error("Lỗi xảy ra khi fetchMessagesAround:", error);
+                } finally {
+                    set({ messageLoading: false });
+                }
+            },
             reset: () => {
                 set({
                     conversations: [],
@@ -55,6 +126,13 @@ export const useChatStore = create<ChatState>()(
                     convoLoading: false,
                     messageLoading: false,
                     replyingTo: null,
+                    showSearchPanel: false,
+                    highlightedMessageId: null,
+                    searchKeyword: "",
+                    searchResults: [],
+                    sidebarSearchQuery: "",
+                    sidebarSearchResults: [],
+                    sidebarSearchLoading: false,
                 });
             },
             fetchConversations: async () => {
@@ -118,7 +196,7 @@ export const useChatStore = create<ChatState>()(
                 }
             },
 
-            sendDirectMessage: async (recipientId, content, imgUrl, replyTo) => {
+            sendDirectMessage: async (recipientId, content, imgUrl, replyTo, type, fileUrl) => {
                 try {
                     const { activeConversationId } = get();
                     await chatService.sendDirectMessage(
@@ -126,7 +204,9 @@ export const useChatStore = create<ChatState>()(
                         content,
                         imgUrl,
                         activeConversationId || undefined,
-                        replyTo
+                        replyTo || undefined,
+                        type,
+                        fileUrl
                     );
                     set((state) => ({
                         conversations: state.conversations.map((c) =>
@@ -138,9 +218,16 @@ export const useChatStore = create<ChatState>()(
                 }
             },
 
-            sendGroupMessage: async (conversationId, content, imgUrl, replyTo) => {
+            sendGroupMessage: async (conversationId, content, imgUrl, replyTo, type, fileUrl) => {
                 try {
-                    await chatService.sendGroupMessage(conversationId, content, imgUrl, replyTo);
+                    await chatService.sendGroupMessage(
+                        conversationId,
+                        content,
+                        imgUrl,
+                        replyTo || undefined,
+                        type,
+                        fileUrl
+                    );
                     set((state) => ({
                         conversations: state.conversations.map((c) =>
                             c._id === get().activeConversationId ? { ...c, seenBy: [] } : c
@@ -148,6 +235,66 @@ export const useChatStore = create<ChatState>()(
                     }));
                 } catch (error) {
                     console.error("Lỗi xảy ra gửi group message", error);
+                }
+            },
+
+            uploadFile: async (file) => {
+                try {
+                    return await chatService.uploadFile(file);
+                } catch (error) {
+                    console.error("Lỗi xảy ra khi upload file:", error);
+                    throw error;
+                }
+            },
+
+            addMembersToGroup: async (conversationId, memberIds) => {
+                try {
+                    set({ loading: true });
+                    const updatedConvo = await chatService.addMembersToGroup(conversationId, memberIds);
+                    get().updateConversation(updatedConvo);
+                } catch (error) {
+                    console.error("Lỗi xảy ra khi addMembersToGroup:", error);
+                } finally {
+                    set({ loading: false });
+                }
+            },
+
+            removeMemberFromGroup: async (conversationId, userId) => {
+                try {
+                    set({ loading: true });
+                    const updatedConvo = await chatService.removeMemberFromGroup(conversationId, userId);
+                    get().updateConversation(updatedConvo);
+                } catch (error) {
+                    console.error("Lỗi xảy ra khi removeMemberFromGroup:", error);
+                } finally {
+                    set({ loading: false });
+                }
+            },
+
+            leaveGroup: async (conversationId) => {
+                try {
+                    set({ loading: true });
+                    await chatService.leaveGroup(conversationId);
+                    set((state) => ({
+                        conversations: state.conversations.filter((c) => c._id !== conversationId),
+                        activeConversationId: state.activeConversationId === conversationId ? null : state.activeConversationId,
+                    }));
+                } catch (error) {
+                    console.error("Lỗi xảy ra khi leaveGroup:", error);
+                } finally {
+                    set({ loading: false });
+                }
+            },
+
+            updateGroupInfo: async (conversationId, name, avatarFile) => {
+                try {
+                    set({ loading: true });
+                    const updatedConvo = await chatService.updateGroupInfo(conversationId, name, avatarFile);
+                    get().updateConversation(updatedConvo);
+                } catch (error) {
+                    console.error("Lỗi xảy ra khi updateGroupInfo:", error);
+                } finally {
+                    set({ loading: false });
                 }
             },
 
@@ -232,7 +379,7 @@ export const useChatStore = create<ChatState>()(
                     console.error("Lỗi khi thả cảm xúc", error);
                 }
             },
-            updateConversation: (conversation) => {
+            updateConversation: (conversation: any) => {
                 set((state) => ({
                     conversations: state.conversations.map((c) =>
                         c._id === conversation._id ? { ...c, ...conversation } : c //ghi de conversation moi vao , neu khong thi giu nguyen

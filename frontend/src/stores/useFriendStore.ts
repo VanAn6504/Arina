@@ -106,5 +106,18 @@ export const useFriendStore = create<FriendState>((set, get) => ({
       set({ loading: false });
     }
   },
-
+  removeFriend: async (friendId) => {
+    try {
+      set({ loading: true });
+      await friendService.removeFriend(friendId);
+      set((state) => ({
+        friends: state.friends.filter((f) => f._id !== friendId),
+      }));
+    } catch (error) {
+      console.error("Lỗi xảy ra khi removeFriend", error);
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
 }));

@@ -7,6 +7,7 @@ import {
   getAllFriends,
   getFriendRequests,
   cancelFriendRequest,
+  removeFriend,
 } from "../controllers/friendController.js";
 
 const router = express.Router();
@@ -19,5 +20,6 @@ router.delete("/requests/:requestId", cancelFriendRequest);
 
 router.get("/", getAllFriends);
 router.get("/requests", getFriendRequests);
+router.delete("/:friendId", removeFriend);
 
 export default router;

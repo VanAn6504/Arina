@@ -2,6 +2,7 @@ export interface Participant {
   _id: string;
   displayName: string;
   avatarUrl?: string | null;
+  blockedUsers?: string[];
   joinedAt: string;
 }
 
@@ -13,6 +14,7 @@ export interface SeenUser {
 
 export interface Group {
   name: string;
+  avatarUrl?: string;
   createdBy: string;
 }
 
@@ -55,6 +57,8 @@ export interface Message {
   senderId: string;
   content: string | null;
   imgUrl?: string | null;
+  fileUrl?: string | null;
+  type?: "text" | "image" | "file" | "system";
   updatedAt?: string | null;
   createdAt: string;
   isOwn?: boolean;

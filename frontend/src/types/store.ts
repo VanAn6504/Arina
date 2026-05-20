@@ -52,8 +52,27 @@ export interface ChatState {
   setActiveConversation: (id: string | null) => void;
   fetchConversations: () => Promise<void>;
   fetchMessages: (conversationId?: string) => Promise<void>;
-  sendDirectMessage: (recipientId: string, content: string, imgUrl?: string, replyTo?: string) => Promise<void>;
-  sendGroupMessage: (conversationId: string, content: string, imgUrl?: string, replyTo?: string) => Promise<void>;
+  sendDirectMessage: (
+    recipientId: string,
+    content: string,
+    imgUrl?: string,
+    replyTo?: string | null,
+    type?: "text" | "image" | "file" | "system",
+    fileUrl?: string
+  ) => Promise<void>;
+  sendGroupMessage: (
+    conversationId: string,
+    content: string,
+    imgUrl?: string,
+    replyTo?: string | null,
+    type?: "text" | "image" | "file" | "system",
+    fileUrl?: string
+  ) => Promise<void>;
+  uploadFile: (file: File) => Promise<{ url: string; name: string; size: number; type: "image" | "file" }>;
+  addMembersToGroup: (conversationId: string, memberIds: string[]) => Promise<void>;
+  removeMemberFromGroup: (conversationId: string, userId: string) => Promise<void>;
+  leaveGroup: (conversationId: string) => Promise<void>;
+  updateGroupInfo: (conversationId: string, name?: string, avatarFile?: File) => Promise<void>;
 
   // add message
   addMessage: (message: Message) => Promise<void>;
@@ -65,7 +84,7 @@ export interface ChatState {
   updateMessageInStore: (conversationId: string, messageId: string, updates: Partial<Message>) => void;
 
   // update convo
-  updateConversation: (conversation: unknown) => void;
+  updateConversation: (conversation: any) => void;
   markAsSeen: () => Promise<void>;
   addConvo: (convo: Conversation) => void;
   createConversation: (
@@ -74,6 +93,22 @@ export interface ChatState {
     memberIds: string[]
   ) => Promise<void>;
 
+  // Search feature
+  showSearchPanel: boolean;
+  highlightedMessageId: string | null;
+  searchKeyword: string;
+  searchResults: any[];
+  setShowSearchPanel: (show: boolean) => void;
+  setHighlightedMessageId: (id: string | null) => void;
+  searchMessages: (keyword: string, conversationId?: string) => Promise<void>;
+  fetchMessagesAround: (conversationId: string, messageId: string) => Promise<void>;
+
+  // Sidebar combined search
+  sidebarSearchQuery: string;
+  sidebarSearchResults: any[];
+  sidebarSearchLoading: boolean;
+  setSidebarSearchQuery: (query: string) => void;
+  searchSidebarMessages: (keyword: string) => Promise<void>;
 }
 
 export interface SocketState {
@@ -95,11 +130,23 @@ export interface FriendState {
   declineRequest: (requestId: string) => Promise<void>;
   cancelFriendRequest: (requestId: string) => Promise<void>;
   getFriends: () => Promise<void>;
-
+  removeFriend: (friendId: string) => Promise<void>;
 }
 
 export interface UserState {
   loading: boolean;
+  blockedUsers: User[];
   updateAvatarUrl: (formData: FormData) => Promise<void>;
-  updateProfile: (displayName: string, phoneNumber: string, bio: string) => Promise<void>; 
+  updateProfile: (
+    displayName: string,
+    phoneNumber: string,
+    bio: string,
+    showOnline?: boolean,
+    allowNotifications?: boolean
+  ) => Promise<void>; 
+  changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
+  getBlockedList: () => Promise<void>;
+  blockUser: (targetUserId: string) => Promise<void>;
+  unblockUser: (targetUserId: string) => Promise<void>;
+  getMutualGroups: (userId: string) => Promise<any[]>;
 }

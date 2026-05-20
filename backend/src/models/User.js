@@ -39,6 +39,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       sparse: true, // cho phép null, nhưng không được trùng
     },
+    showOnline: {
+      type: Boolean,
+      default: true,
+    },
+    allowNotifications: {
+      type: Boolean,
+      default: true,
+    },
+    blockedUsers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,

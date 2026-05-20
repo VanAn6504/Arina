@@ -7,9 +7,13 @@ import UserAvatar from "./UserAvatar";
 import StatusBadge from "./StatusBadge";
 import GroupChatAvatar from "./GroupChatAvatar";
 import { useSocketStore } from "@/stores/useSocketStore";
+import GroupSettingsModal from "./GroupSettingsModal";
+import { Search } from "lucide-react";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
-  const { conversations, activeConversationId } = useChatStore();
+  const { conversations, activeConversationId, showSearchPanel, setShowSearchPanel } = useChatStore();
   const { user } = useAuthStore();
   const { onlineUsers } = useSocketStore();
 
@@ -51,7 +55,6 @@ const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
                   name={otherUser?.displayName || "Arina"}
                   avatarUrl={otherUser?.avatarUrl || undefined}
                 />
-                {/* todo: socket io */}
                 <StatusBadge
                   status={
                     onlineUsers.includes(otherUser?._id ?? "") ? "online" : "offline"
@@ -62,6 +65,7 @@ const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
               <GroupChatAvatar
                 participants={chat.participants}
                 type="sidebar"
+                groupAvatarUrl={chat.group?.avatarUrl}
               />
             )}
           </div>
@@ -70,6 +74,26 @@ const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
           <h2 className="font-semibold text-foreground">
             {chat.type === "direct" ? otherUser?.displayName : chat.group?.name}
           </h2>
+
+          <div className="flex-1" />
+
+          {/* Action buttons */}
+          <div className="flex items-center gap-1.5 pr-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "h-8 w-8 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors",
+                showSearchPanel && "bg-muted/80 text-foreground"
+              )}
+              onClick={() => setShowSearchPanel(!showSearchPanel)}
+            >
+              <Search className="size-4" />
+            </Button>
+            {chat.type === "group" && (
+              <GroupSettingsModal selectedConvo={chat} />
+            )}
+          </div>
         </div>
       </div>
     </header>

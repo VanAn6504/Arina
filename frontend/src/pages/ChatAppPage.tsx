@@ -1,12 +1,21 @@
 import ChatWindowLayout from "@/components/chat/ChatWindowLayout";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useEffect } from "react";
+import { useUserStore } from "@/stores/useUserStore";
+import { useFriendStore } from "@/stores/useFriendStore";
 
 const ChatAppPage = () => {
-  return (
+  const { getBlockedList } = useUserStore();
+  const { getFriends } = useFriendStore();
 
+  useEffect(() => {
+    getBlockedList();
+    getFriends();
+  }, [getBlockedList, getFriends]);
+
+  return (
     <TooltipProvider>
       <SidebarProvider>
         <AppSidebar />

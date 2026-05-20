@@ -1,6 +1,9 @@
 import Friend from "../models/Friend.js";
 import User from "../models/User.js";
 import FriendRequest from "../models/FriendRequest.js";
+import Conversation from "../models/Conversation.js";
+import Message from "../models/Message.js";
+import { io } from "../socket/index.js";
 
 export const sendFriendRequest = async (req, res) => {
   try {
@@ -201,6 +204,40 @@ export const getFriendRequests = async (req, res) => {
     res.status(200).json({ sent, received });
   } catch (error) {
     console.error("Lỗi khi lấy danh sách yêu cầu kết bạn", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+
+export const removeFriend = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { friendId } = req.params;
+
+    const userA = userId.toString() < friendId.toString() ? userId : friendId;
+    const userB = userId.toString() < friendId.toString() ? friendId : userId;
+
+    await Friend.deleteOne({ userA, userB });
+
+    // Xóa cuộc trò chuyện trực tiếp giữa 2 người nếu có
+    const convo = await Conversation.findOne({
+      type: "direct",
+      "participants.userId": { $all: [userId, friendId] },
+    });
+
+    if (convo) {
+      await Message.deleteMany({ conversationId: convo._id });
+      await Conversation.deleteOne({ _id: convo._id });
+
+      // Phát socket để xóa cuộc trò chuyện khỏi sidebar của cả hai người lập tức
+      if (io) {
+        io.to(userId.toString()).emit("removed-from-group", { conversationId: convo._id.toString() });
+        io.to(friendId.toString()).emit("removed-from-group", { conversationId: convo._id.toString() });
+      }
+    }
+
+    return res.status(200).json({ message: "Hủy kết bạn thành công." });
+  } catch (error) {
+    console.error("Lỗi khi hủy kết bạn", error);
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };

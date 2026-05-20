@@ -9,13 +9,34 @@ import {
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useThemeStore } from "@/stores/useThemeStore";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useUserStore } from "@/stores/useUserStore";
+import { useSocketStore } from "@/stores/useSocketStore";
 import { useState } from "react";
 
 const PreferencesForm = () => {
   const { isDark, toggleTheme } = useThemeStore();
+  const { user } = useAuthStore();
+  const { updateProfile } = useUserStore();
+  const { socket } = useSocketStore();
 
-  //   các bạn cần handle logic setOnlineStatus
-  const [onlineStatus, setOnlineStatus] = useState(false);
+  const [onlineStatus, setOnlineStatus] = useState(user?.showOnline !== false);
+
+  const handleToggleOnline = async (checked: boolean) => {
+    setOnlineStatus(checked);
+    try {
+      await updateProfile(
+        user?.displayName ?? "",
+        user?.phoneNumber ?? "",
+        user?.bio ?? "",
+        checked
+      );
+      socket?.emit("toggle-visibility", checked);
+    } catch (error) {
+      // Revert if error
+      setOnlineStatus(!checked);
+    }
+  };
 
   return (
     <Card className="glass-strong border-border/30">
@@ -69,7 +90,7 @@ const PreferencesForm = () => {
           <Switch
             id="online-status"
             checked={onlineStatus}
-            onCheckedChange={setOnlineStatus}
+            onCheckedChange={handleToggleOnline}
             className="data-[state=checked]:bg-primary-glow"
           />
         </div>

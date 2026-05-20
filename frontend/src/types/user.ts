@@ -6,6 +6,9 @@ export interface User {
   avatarUrl?: string;
   bio?: string;
   phoneNumber?: string;
+  showOnline?: boolean;
+  allowNotifications?: boolean;
+  blockedUsers?: string[] | User[];
   createdAt?: string;
   updatedAt?: string;
 }
